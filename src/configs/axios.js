@@ -3,7 +3,7 @@ import axios from 'axios';
 import _ from 'lodash';
 // import messaging from '@react-native-firebase/messaging';
 
-let LOCAL_URL = 'http://192.168.165.139:5050';
+let LOCAL_URL = 'http://192.168.50.56:5050';
 
 export const BASE_URL = LOCAL_URL;
 

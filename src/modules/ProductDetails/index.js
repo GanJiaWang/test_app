@@ -1,10 +1,32 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {BackButton} from '../../commons';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import {getCart, createCarts, updateCarts} from '../../api';
+import _ from 'lodash';
 
 const ProductDetails = ({navigation, route}) => {
   const {product} = route.params;
+
+  const addToCart = async () => {
+    const cart = await getCart(product.id);
+    if (_.isEmpty(cart.data)) {
+      await createCarts({productId: product.id, quantity: 1});
+    } else {
+      await updateCarts({
+        id: product.id,
+        formValues: {oldQuantity: cart.data.results.quantity, quantity: 1},
+      });
+    }
+    Alert.alert('ADD TO CART');
+  };
 
   return (
     <View style={styles.container}>
@@ -26,6 +48,12 @@ const ProductDetails = ({navigation, route}) => {
             <Text style={styles.productDetail}>
               Description: {product.description}
             </Text>
+            <View style={styles.separator} />
+            <View style={styles.addToCarContainer}>
+              <TouchableOpacity style={styles.shareButton} onPress={addToCart}>
+                <Text style={styles.shareButtonText}>Add To Cart</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
@@ -99,5 +127,27 @@ const styles = StyleSheet.create({
     width: 250,
     borderRadius: 30,
     backgroundColor: 'red',
+  },
+  separator: {
+    height: 2,
+    backgroundColor: '#eeeeee',
+    marginTop: 20,
+    marginHorizontal: 30,
+  },
+  shareButton: {
+    marginTop: 30,
+    height: 45,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    backgroundColor: '#00BFFF',
+  },
+  shareButtonText: {
+    color: '#FFFFFF',
+    fontSize: 20,
+  },
+  addToCarContainer: {
+    marginHorizontal: 30,
   },
 });
